@@ -1,0 +1,15 @@
+apiVersion: acme.com/v1
+kind: Service
+metadata:
+  name: vote-app
+repo:
+  owner: monadaco
+  name: vote-app
+---
+apiVersion: acme.com/v1
+kind: Service
+metadata:
+  name: vote-backend
+repo:
+  owner: monadaco
+  name: vote-backend
