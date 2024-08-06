@@ -1,0 +1,57 @@
+
+name: Create a New Service
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  create_service_file:
+    if: contains(github.event.issue.labels.*.name, 'new-service')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Extract issue details
+        id: extract
+        run: |
+          ISSUE_BODY=$(jq -r '.issue.body' < "$GITHUB_EVENT_PATH")
+          
+          SERVICE_NAME=$(echo "$ISSUE_BODY" | grep -A 2 '### Service Name' | tail -n 1 | tr -d '')
+          APP_NAME=$(echo "$ISSUE_BODY" | grep -A 2 '### App Name' | tail -n 1 | tr -d '')
+          REPO_NAME=$(echo "$ISSUE_BODY" | grep -A 2 '### Repository Name' | tail -n 1 | tr -d '')
+          REPO_OWNER=$(echo "$ISSUE_BODY" | grep -A 2 '### Repository Owner' | tail -n 1 | tr -d '')
+          
+          echo "SERVICE_NAME=$SERVICE_NAME" >> $GITHUB_ENV
+          echo "APP_NAME=$APP_NAME" >> $GITHUB_ENV
+          echo "REPO_NAME=$REPO_NAME" >> $GITHUB_ENV
+          echo "REPO_OWNER=$REPO_OWNER" >> $GITHUB_ENV
+
+      - name: Create YAML file
+        run: |
+          mkdir -p services
+          echo "apiVersion: acme.com/v1
+          kind: Service
+          metadata:
+            name: ${{ env.SERVICE_NAME }}
+          labels:
+            app: ${{ env.APP_NAME }}
+          repo:
+            name: ${{ env.REPO_NAME }}
+            owner: ${{ env.REPO_OWNER }}" > services/${{ env.SERVICE_NAME }}.yaml
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add services/${{ env.SERVICE_NAME }}.yaml
+          git commit -m "Add new service ${{ env.SERVICE_NAME }}"
+          git push
+
+      - name: Close the issue
+        run: gh issue close $GITHUB_ISSUE_NUMBER --comment "Auto closing issue"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ISSUE_NUMBER: ${{ github.event.issue.number }}
