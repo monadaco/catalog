@@ -13,3 +13,11 @@ metadata:
 repo:
   owner: monadaco
   name: vote-backend
+--- 
+apiVersion: acme.com/v1
+kind: Service
+metadata:
+  name: echo-demo
+repo:
+  owner: monadaco
+  name: echo-demo
