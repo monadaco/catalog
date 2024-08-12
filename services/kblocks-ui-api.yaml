@@ -1,0 +1,7 @@
+apiVersion: acme.com/v1
+kind: Service
+metadata:
+  name: kblocks-ui-api
+repo:
+  owner: monadaco
+  name: kblocks-ui-api
