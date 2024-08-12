@@ -1,8 +1,0 @@
-apiVersion: acme.com/v1
-kind: Service
-metadata:
-  name: eladb-test
-repo:
-  owner: monadaco
-  name: eladb-test
-configOnly: true
