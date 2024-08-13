@@ -1,0 +1,7 @@
+apiVersion: acme.com/v1
+kind: Service
+metadata:
+  name: kblocks-test-app
+repo:
+  owner: monadaco
+  name: kblocks-test-app
