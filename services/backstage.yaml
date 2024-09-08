@@ -1,0 +1,7 @@
+apiVersion: acme.com/v1
+kind: Service
+metadata:
+  name: backstage
+repo:
+  owner: monadaco
+  name: backstage
